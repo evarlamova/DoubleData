@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html ng-app="checksum">
+
+<head>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
+	<link href="/static/bootstrap.min.css" rel="stylesheet">
+	<link href="/static/style.css" rel="stylesheet" type="text/css">
+	<script src="//npmcdn.com/api-check@latest/dist/api-check.js"></script>
+	<script src="https://code.angularjs.org/1.3.9/angular.js"></script>
+	<script src="https://code.angularjs.org/1.3.9/angular-resource.js"></script>
+	<script src="https://code.angularjs.org/1.3.9/angular-cookies.js"></script>
+	<script src="static/app.js"></script>
+</head>
+<body ng-controller="HashSum" ng-init="init()">
+
+<div ng-controller="Counting" class="form-group">
+
+	<form name = "taskForm">
+		<div class="checkbox">
+			<div class="form-group checkboxdiv ">
+				<label>
+					 Upload file <input type="checkbox" ng-model="isLocal" class="pull-right checkbox_cl">
+				</label>
+			</div>
+		</div>
+
+		<div class="form-group col-lg-3">
+			<input type="file" file-model="fileInput" id="fileInput" name = "fileInput" ng-disabled = "!isLocal" valid-file required/>
+		</div>
+		<br/><br/>
+
+		<div class="form-group col-lg-3">
+			File URL: <input ng-model="linkInput"  class="form-control" name = "linkInput" ng-disabled = "isLocal"  required/>
+		</div>
+
+		<br/> <br/> <br/><br/>
+		<div class="form-group col-lg-3">
+			<p>Hashing algorithm:
+			<div ng-init="initRadioList()">
+				<label ng-repeat="algoType in algoTypes" >
+					<label class="radio-inline" style="width:90px">
+						<input type="radio" name="algoTypeName" ng-model="$parent.algoType" data-ng-value = "algoType" ng-init="$index==0?($parent.algoType=algoType):''"
+							   ng-value="algoType">{{algoType}}</label>
+				</label>
+			</div>
+			</p>
+		</div>
+
+		<br/> <br/> <br/><br/><br/>
+		<div class="form-group col-lg-3">
+			<button ng-click="uploadFile()" class="btn btn-default" ng-enter="uploadFile()"
+					ng-disabled = "(isLocal && taskForm.fileInput.$invalid) || (!isLocal && taskForm.linkInput.$invalid)">count hash-sum</button>
+		</div>
+        </form>
+		<table ng-controller="tasksStatus" class="table table-striped table-condensed">
+			<thead>
+			<th> taskUuid </th>
+			<th> task address </th>
+			<th> algo type </th>
+			<th> status of task </th>
+			<th> result </th>
+			<th> cancel task  </th>
+			</thead>
+			<tr ng-repeat="task in tasks" >
+				<td>{{task.taskUuid}}</td>
+				<td>{{task.objectName}}</td>
+				<td>{{task.algoType}}</td>
+				<td>{{task.message}}</td>
+				<td>{{task.result}}</td>
+				<td> <button ng-click="deleteTask(task.taskUuid)" class="btn-xs btn-primary"  ng-enter="deleteTask(task.taskUuid)">delete task</button> </td>
+			</tr>
+		</table>
+</div>
+<footer  ng-init="init()">
+	<p >Your uuid = {{user}}</p>
+</footer>
+</body>
+
+</html>
